@@ -27,4 +27,4 @@ rm -r $prefix/bin
 python/build.sh $prefix $python_version
 
 # zip
-tar -czvf -X python/standalone.exclude python-$python_version-android-$NDK_VERSION-$abi.tar.gz -C prefix/$abi .
+tar -czf python-$python_version-android-$NDK_VERSION-$abi.tar.gz -X python/standalone.exclude -C prefix/$abi .
