@@ -1,9 +1,5 @@
-# This is a list of Python standard library path patterns
-# we exclude from Python distributive ZIP file. It is 
-# used by `tar -X` command.
+# Files to exclude from .tar.gz
 #
-share/*
-man/*
 lib/*.a
 lib/*.la
 lib/python*/lib-dynload/_test*.so
@@ -18,6 +14,8 @@ lib/python*/test
 lib/python*/tkinter
 lib/python*/turtle*
 lib/python*/wsgiref
+man
+share
 */__pycache__
 #
 #
