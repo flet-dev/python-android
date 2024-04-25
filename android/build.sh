@@ -26,30 +26,5 @@ rm -r $prefix/bin
 # build Python
 python/build.sh $prefix $python_version
 
-cleanup_dirs=(
-    "man"
-    "share"
-    "lib/python$version_short/curses"
-    "lib/python$version_short/idlelib"
-    "lib/python$version_short/tkinter"
-    "lib/python$version_short/turtle"
-    "lib/python$version_short/ensurepip"
-    "lib/python$version_short/pydoc_data"
-)
-
-# delete static libs
-rm "prefix/$abi/lib"/{*.a,*.la}
-
-# cleanup Python install
-for dir in "${cleanup_dirs[@]}"; do
-    rm -rf "prefix/$abi/$dir"
-done
-
-# delete tests
-cd prefix/$abi/lib/python$version_short
-find . -name test -or -name tests | xargs rm -r
-find . -name __pycache__ | xargs rm -r
-cd -
-
 # zip
-tar -czvf python-$python_version-android-$NDK_VERSION-$abi.tar.gz -C prefix/$abi .
+tar -czvf -X python/standalone.exclude python-$python_version-android-$NDK_VERSION-$abi.tar.gz -C prefix/$abi .
