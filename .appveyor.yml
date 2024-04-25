@@ -1,0 +1,32 @@
+image: ubuntu-gce-c
+
+environment:
+  PYTHON_VERSION: 3.12.3
+  NDK_VERSION: r26d
+
+  matrix:
+    - job_name: Python for Android - r26d - arm64-v8a
+      job_group: android
+      ANDROID_ABI: arm64-v8a
+
+stack:
+- python 3.12
+
+for:
+  # ======================================
+  #      Android jobs
+  # ======================================
+  - matrix:
+      only:
+        - job_group: android
+      
+      image: ubuntu-gce-c
+
+      build_script:
+      - cd android
+      - build.sh
+
+      artifacts:
+      - path: android/*.tar.gz
+
+test: off
