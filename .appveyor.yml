@@ -5,9 +5,17 @@ environment:
   NDK_VERSION: r26d
 
   matrix:
-    - job_name: Python for Android - r26d - arm64-v8a
+    - job_name: Python for Android - arm64-v8a
       job_group: android
       ANDROID_ABI: arm64-v8a
+
+    # - job_name: Python for Android - armeabi-v7a
+    #   job_group: android
+    #   ANDROID_ABI: armeabi-v7a
+
+    # - job_name: Python for Android - x86_64
+    #   job_group: android
+    #   ANDROID_ABI: x86_64
 
 stack:
 - python 3.12
@@ -24,7 +32,7 @@ for:
 
       build_script:
       - cd android
-      - build.sh
+      - build.sh $PYTHON_VERSION $ANDROID_ABI
 
       artifacts:
       - path: android/*.tar.gz
