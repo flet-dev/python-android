@@ -28,13 +28,13 @@ for:
       only:
         - job_group: android
       
-      APPVEYOR_BUILD_WORKER_IMAGE: ubuntu-gce-c
+        image: ubuntu-gce-c
 
-      build_script:
-      - cd android
-      - build.sh $PYTHON_VERSION $ANDROID_ABI
+        build_script:
+        - cd android
+        - build.sh $PYTHON_VERSION $ANDROID_ABI
 
-      artifacts:
-      - path: android/*.tar.gz
+        artifacts:
+        - path: android/*.tar.gz
 
 test: off
