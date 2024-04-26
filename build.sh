@@ -13,6 +13,7 @@ openssl_version=3.0.13-1
 sqlite_version=3.45.1-0
 
 os=android
+build=custom
 
 project_dir=$(dirname $(realpath $0))
 downloads=$project_dir/downloads
@@ -42,6 +43,19 @@ case $abi in
         fail "Unknown ABI: '$abi'"
         ;;
 esac
+
+# create VERSIONS support file
+support_versions=$project_dir/support/$python_version_short/$os/VERSIONS
+mkdir -p $(dirname $support_versions)
+echo ">>> Create VERSIONS file for $os"
+echo "Python version: $python_version " > $support_versions
+echo "Build: $build" >> $support_versions
+echo "Min $os version: $api_level" >> $support_versions
+echo "---------------------" >> $support_versions
+echo "libFFI: $libffi_version" >> $support_versions
+echo "BZip2: $bzip2_version" >> $support_versions
+echo "OpenSSL: $openssl_version" >> $support_versions
+echo "XZ: $xz_version" >> $support_versions
 
 #      BZip2
 # ===============
@@ -138,7 +152,7 @@ tar zxvf $downloads/$python_filename -C $build_dir
 mv $build_dir/Python-$python_version $python_build_dir
 touch $python_build_dir/configure
 
-echo ">>> Build and install Python for $abi"
+echo ">>> Configuring Python build environment for $abi"
 
 # configure build environment
 prefix=python_build_dir
@@ -147,6 +161,7 @@ prefix=python_build_dir
 cd $python_build_dir
 
 # apply patches
+echo ">>> Patching Python for $abi"
 patches="dynload_shlib lfs soname"
 if [ $python_version_int -le 311 ]; then
     patches+=" sysroot_paths"
