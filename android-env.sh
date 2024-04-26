@@ -28,7 +28,6 @@ if [[ -z "${NDK_HOME-}" ]]; then
             mv Android\ NDK\ */AndroidNDK*.app/Contents/NDK $NDK_HOME
             rm -rf Android\ NDK\ *
             cd -
-            exit 1
         else
             ndk_zip=$downloads/android-ndk-$NDK_VERSION-linux.zip
             if ! test -f $ndk_zip; then
@@ -45,7 +44,6 @@ if [[ -z "${NDK_HOME-}" ]]; then
     else
         echo "NDK $NDK_VERSION is already installed in $NDK_HOME"
     fi
-    exit 1
 else
     echo "NDK home: $NDK_HOME"
 fi

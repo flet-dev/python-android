@@ -18,8 +18,8 @@ project_dir=$(dirname $(realpath $0))
 downloads=$project_dir/downloads
 
 # build short Python version
-read version_major version_minor < <(echo $python_version | sed -E 's/^([0-9]+)\.([0-9]+).*/\1 \2/')
-version_short=$version_major.$version_minor
+read python_version_major python_version_minor < <(echo $python_version | sed -E 's/^([0-9]+)\.([0-9]+).*/\1 \2/')
+python_version_short=$python_version_major.$python_version_minor
 
 curl_flags="--disable --fail --location --create-dirs --progress-bar"
 mkdir -p $downloads
@@ -120,12 +120,33 @@ touch $sqlite_lib
 #      Python
 # ===============
 
+build_dir=$project_dir/build/$os/$abi
+python_build_dir=$project_dir/build/$os/$abi/python-$python_version_short
+python_install=$project_dir/install/$os/$abi/python-$python_version_short
+python_lib=$sqlite_install/lib/libpython$python_version_short.a
+python_filename=Python-$python_version.tgz
+
+echo ">>> Download Python for $abi"
+curl $curl_flags -o $downloads/$python_filename \
+    https://www.python.org/ftp/python/$python_version/$python_filename
+
+echo ">>> Unpack Python for $abi"
+rm -rf $build_dir
+mkdir -p $build_dir
+tar zxvf $downloads/$python_filename -C $build_dir
+mv $build_dir/Python-$python_version $python_build_dir
+touch $python_build_dir/configure
+
+echo ">>> Build and install Python for $abi"
+
+# configure build environment
+prefix=python_build_dir
 . android-env.sh
 
 exit 0
 
 # build Python
-python/build.sh $prefix $python_version
+#python/build.sh $prefix $python_version
 
 # zip
-tar -czf python-$python_version-android-$NDK_VERSION-$abi.tar.gz -X python/standalone.exclude -C prefix/$abi .
+#tar -czf python-$python_version-android-$NDK_VERSION-$abi.tar.gz -X python/standalone.exclude -C prefix/$abi .
