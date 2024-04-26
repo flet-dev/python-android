@@ -199,6 +199,7 @@ ac_cv_file__dev_ptc=no
 EOF
 export CONFIG_SITE=$(pwd)/config.site
 
+echo ">>> Configuring Python for $abi"
 ./configure \
     LIBLZMA_CFLAGS="-I$xz_install/include" \
     LIBLZMA_LIBS="-L$xz_install/lib -llzma" \
@@ -216,11 +217,19 @@ export CONFIG_SITE=$(pwd)/config.site
     --without-ensurepip \
 	2>&1 | tee -a ../python-$python_version.config.log
 
+echo ">>> Building Python for $abi"
 make all \
     2>&1 | tee -a ../python-$python_version.build.log
 
+echo ">>> Installing Python for $abi"
 make install \
     2>&1 | tee -a ../python-$python_version.install.log
+
+echo ">>> Copying Python dependencies $abi"
+cp {$openssl_install,$sqlite_install}/lib/*_python.so $python_install/lib
+
+echo ">>> Stripping dynamic libraries for $abi"
+find $python_install -type f -iname "*.so" -exec $STRIP --strip-unneeded {} \;
 
 # zip
 #tar -czf python-$python_version-android-$NDK_VERSION-$abi.tar.gz -X python/standalone.exclude -C prefix/$abi .
