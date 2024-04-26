@@ -35,7 +35,6 @@ if [[ -z "${NDK_HOME-}" ]]; then
                 curl -#L -o $downloads/$ndk_zip https://dl.google.com/android/repository/$ndk_zip
             fi
             cd $downloads
-            ls -al
             unzip -oq $ndk_zip
             mkdir -p $(dirname $NDK_HOME)
             mv android-ndk-$NDK_VERSION $NDK_HOME
