@@ -1,10 +1,11 @@
+image: ubuntu-gce-c
+
 environment:
   PYTHON_VERSION: 3.12
   NDK_VERSION: r26d
 
   matrix:
     - job_name: Python for Android - arm64-v8a
-      job_group: android
       ANDROID_ABI: arm64-v8a
 
     # - job_name: Python for Android - armeabi-v7a
@@ -18,20 +19,7 @@ environment:
 stack:
 - python 3.12
 
-for:
-  # ======================================
-  #      Android jobs
-  # ======================================
-  - matrix:
-      only:
-        - job_group: android
-      
-    image: ubuntu-gce-c
-
-    build_script:
-    - ./build.sh $PYTHON_VERSION $ANDROID_ABI
-
-    # artifacts:
-    # - path: android/*.tar.gz
+build_script:
+- ./build.sh $PYTHON_VERSION $ANDROID_ABI
 
 test: off
