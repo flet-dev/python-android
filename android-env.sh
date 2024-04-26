@@ -10,10 +10,14 @@ if [[ -z "${NDK_HOME-}" ]]; then
         echo "Installing NDK $NDK_VERSION to $NDK_HOME"
 
         if [ $(uname) = "Darwin" ]; then
-            if ! command -v 7z &> /dev/null
-            then
-                echo "Installing p7zip"
-                brew install p7zip
+            seven_zip=$downloads/7zip/7zz
+            if ! test -f $seven_zip; then
+                echo "Installing 7-zip"
+                mkdir -p $(dirname $seven_zip)
+                cd $(dirname $seven_zip)
+                curl -#OL https://www.7-zip.org/a/7z2301-mac.tar.xz
+                tar -xf 7z2301-mac.tar.xz
+                cd -
             fi
 
             ndk_dmg=android-ndk-$NDK_VERSION-darwin.dmg
@@ -23,7 +27,7 @@ if [[ -z "${NDK_HOME-}" ]]; then
             fi
 
             cd $downloads
-            7z x $ndk_dmg
+            $seven_zip x $ndk_dmg
             mkdir -p $(dirname $NDK_HOME)
             mv Android\ NDK\ */AndroidNDK*.app/Contents/NDK $NDK_HOME
             rm -rf Android\ NDK\ *

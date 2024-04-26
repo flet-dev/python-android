@@ -180,8 +180,6 @@ for name in $patches; do
     patch -p1 -i $project_dir/patches/$name.patch
 done
 
-exit 0
-
 # Add sysroot paths, otherwise Python 3.8's setup.py will think libz is unavailable.
 CFLAGS+=" -I$toolchain/sysroot/usr/include"
 LDFLAGS+=" -L$toolchain/sysroot/usr/lib/$host_triplet/$api_level"
@@ -201,23 +199,28 @@ ac_cv_file__dev_ptc=no
 EOF
 export CONFIG_SITE=$(pwd)/config.site
 
-configure_args="--host=$host_triplet --build=$(./config.guess) \
---enable-shared --without-ensurepip --with-openssl=$prefix"
+./configure \
+    LIBLZMA_CFLAGS="-I$xz_install/include" \
+    LIBLZMA_LIBS="-L$xz_install/lib -llzma" \
+    BZIP2_CFLAGS="-I$bzip2_install/include" \
+    BZIP2_LIBS="-L$bzip2_install/lib -lbz2" \
+    LIBFFI_CFLAGS="-I$libffi_install/include" \
+    LIBFFI_LIBS="-L$libffi_install/lib -lffi" \
+    --host=$host_triplet \
+    --build=$(./config.guess) \
+    --with-build-python=yes \
+    --prefix="$python_install" \
+    --enable-ipv6 \
+    --with-openssl="$openssl_install" \
+    --enable-shared \
+    --without-ensurepip \
+	2>&1 | tee -a ../python-$python_version.config.log
 
-# This prevents the "getaddrinfo bug" test, which can't be run when cross-compiling.
-configure_args+=" --enable-ipv6"
+make all \
+    2>&1 | tee -a ../python-$python_version.build.log
 
-if [ $version_int -ge 311 ]; then
-    configure_args+=" --with-build-python=yes"
-fi
-
-./configure $configure_args
-
-make
-make install prefix=$prefix
-
-# build Python
-#python/build.sh $prefix $python_version
+make install \
+    2>&1 | tee -a ../python-$python_version.install.log
 
 # zip
 #tar -czf python-$python_version-android-$NDK_VERSION-$abi.tar.gz -X python/standalone.exclude -C prefix/$abi .
