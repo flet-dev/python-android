@@ -19,7 +19,7 @@ if [[ -z "${NDK_HOME-}" ]]; then
             ndk_dmg=android-ndk-$NDK_VERSION-darwin.dmg
             if ! test -f $downloads/$ndk_dmg; then
                 echo ">>> Downloading $ndk_dmg"
-                curl -#SOL -o $downloads/$ndk_dmg https://dl.google.com/android/repository/$ndk_dmg
+                curl -#L -o $downloads/$ndk_dmg https://dl.google.com/android/repository/$ndk_dmg
             fi
 
             cd $downloads
@@ -32,9 +32,10 @@ if [[ -z "${NDK_HOME-}" ]]; then
             ndk_zip=android-ndk-$NDK_VERSION-linux.zip
             if ! test -f $downloads/$ndk_zip; then
                 echo ">>> Downloading $ndk_zip"
-                curl -#SOL -o $downloads/$ndk_zip https://dl.google.com/android/repository/$ndk_zip
+                curl -#L -o $downloads/$ndk_zip https://dl.google.com/android/repository/$ndk_zip
             fi
             cd $downloads
+            ls -al
             unzip -oq $ndk_zip
             mkdir -p $(dirname $NDK_HOME)
             mv android-ndk-$NDK_VERSION $NDK_HOME
