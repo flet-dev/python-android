@@ -20,6 +20,10 @@ downloads=$project_dir/downloads
 
 # build short Python version
 read python_version_major python_version_minor < <(echo $python_version | sed -E 's/^([0-9]+)\.([0-9]+).*/\1 \2/')
+if [[ $python_version =~ ^[0-9]+\.[0-9]+$ ]]; then
+    python_version=$(curl --silent "https://www.python.org/ftp/python/" | sed -nr "s/^.*\"($python_version_major\.$python_version_minor\.[0-9]+)\/\".*$/\1/p" | sort -rV | head -n 1)
+    echo $python_version
+fi
 python_version_short=$python_version_major.$python_version_minor
 python_version_int=$(($python_version_major * 100 + $python_version_minor))
 
