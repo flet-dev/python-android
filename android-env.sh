@@ -1,17 +1,54 @@
-# This script must be sourced with the following variables already set:
-#   * prefix: path with `include` and `lib` subdirectories to add to CFLAGS and LDFLAGS.
-
-# Print all messages on stderr so they're visible when running within build-wheel.
-log() {
-    echo "$1" >&2
-}
-
 fail() {
-    log "$1"
+    echo "$1" >&2
     exit 1
 }
 
-echo "NDK home: $NDK_HOME"
+if [[ -z "${NDK_HOME-}" ]]; then
+    NDK_HOME=$HOME/ndk/$NDK_VERSION
+    echo "NDK_HOME environment variable is not set."
+    if [ ! -d $NDK_HOME ]; then
+        echo "Installing NDK $NDK_VERSION to $NDK_HOME"
+
+        if [ $(uname) = "Darwin" ]; then
+            if ! command -v 7z &> /dev/null
+            then
+                echo "Installing p7zip"
+                brew install p7zip
+            fi
+
+            ndk_dmg=$downloads/android-ndk-$NDK_VERSION-darwin.dmg
+            if ! test -f $ndk_dmg; then
+                echo ">>> Downloading $ndk_dmg"
+                curl -#SOL -o $ndk_dmg https://dl.google.com/android/repository/$ndk_dmg
+            fi
+
+            cd $downloads
+            7z x $ndk_dmg
+            mkdir -p $(dirname $NDK_HOME)
+            mv Android\ NDK\ */AndroidNDK*.app/Contents/NDK $NDK_HOME
+            rm -rf Android\ NDK\ *
+            cd -
+            exit 1
+        else
+            ndk_zip=$downloads/android-ndk-$NDK_VERSION-linux.zip
+            if ! test -f $ndk_zip; then
+                echo ">>> Downloading $ndk_zip"
+                curl -#SOL -o $ndk_zip https://dl.google.com/android/repository/$ndk_zip
+            fi
+            cd $downloads
+            unzip -oq $ndk_zip
+            mkdir -p $(dirname $NDK_HOME)
+            mv android-ndk-$NDK_VERSION $NDK_HOME
+            cd -
+            echo "NDK installed to $NDK_HOME"
+        fi
+    else
+        echo "NDK $NDK_VERSION is already installed in $NDK_HOME"
+    fi
+    exit 1
+else
+    echo "NDK home: $NDK_HOME"
+fi
 
 if [ $host_triplet = "arm-linux-androideabi" ]; then
     clang_triplet=armv7a-linux-androideabi
