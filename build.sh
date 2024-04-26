@@ -20,6 +20,7 @@ downloads=$project_dir/downloads
 # build short Python version
 read python_version_major python_version_minor < <(echo $python_version | sed -E 's/^([0-9]+)\.([0-9]+).*/\1 \2/')
 python_version_short=$python_version_major.$python_version_minor
+python_version_int=$(($python_version_major * 100 + $python_version_minor))
 
 curl_flags="--disable --fail --location --create-dirs --progress-bar"
 mkdir -p $downloads
@@ -143,7 +144,58 @@ echo ">>> Build and install Python for $abi"
 prefix=python_build_dir
 . android-env.sh
 
+cd $python_build_dir
+
+# apply patches
+patches="dynload_shlib lfs soname"
+if [ $python_version_int -le 311 ]; then
+    patches+=" sysroot_paths"
+fi
+if [ $python_version_int -ge 311 ]; then
+    patches+=" python_for_build_deps"
+fi
+if [ $python_version_int -ge 312 ]; then
+    patches+=" bldlibrary grp"
+fi
+for name in $patches; do
+    patch -p1 -i $project_dir/patches/$name.patch
+done
+
 exit 0
+
+# Add sysroot paths, otherwise Python 3.8's setup.py will think libz is unavailable.
+CFLAGS+=" -I$toolchain/sysroot/usr/include"
+LDFLAGS+=" -L$toolchain/sysroot/usr/lib/$host_triplet/$api_level"
+
+# The configure script omits -fPIC on Android, because it was unnecessary on older versions of
+# the NDK (https://bugs.python.org/issue26851). But it's definitely necessary on the current
+# version, otherwise we get linker errors like "Parser/myreadline.o: relocation R_386_GOTOFF
+# against preemptible symbol PyOS_InputHook cannot be used when making a shared object".
+export CCSHARED="-fPIC"
+
+# Override some tests.
+cat > config.site <<EOF
+# Things that can't be autodetected when cross-compiling.
+ac_cv_aligned_required=no  # Default of "yes" changes hash function to FNV, which breaks Numba.
+ac_cv_file__dev_ptmx=no
+ac_cv_file__dev_ptc=no
+EOF
+export CONFIG_SITE=$(pwd)/config.site
+
+configure_args="--host=$host_triplet --build=$(./config.guess) \
+--enable-shared --without-ensurepip --with-openssl=$prefix"
+
+# This prevents the "getaddrinfo bug" test, which can't be run when cross-compiling.
+configure_args+=" --enable-ipv6"
+
+if [ $version_int -ge 311 ]; then
+    configure_args+=" --with-build-python=yes"
+fi
+
+./configure $configure_args
+
+make
+make install prefix=$prefix
 
 # build Python
 #python/build.sh $prefix $python_version
