@@ -1,21 +1,31 @@
-image: ubuntu-gce-c
-
 environment:
   PYTHON_VERSION: 3.12
   NDK_VERSION: r26d
 
   matrix:
     - job_name: Python for Android - arm64-v8a
+      job_group: android
       ANDROID_ABI: arm64-v8a
 
     - job_name: Python for Android - armeabi-v7a
+      job_group: android
       ANDROID_ABI: armeabi-v7a
 
     - job_name: Python for Android - x86_64
+      job_group: android
       ANDROID_ABI: x86_64
 
     - job_name: Python for Android - x86
+      job_group: android
       ANDROID_ABI: x86
+
+for:
+  - matrix:
+      only:
+        - job_group: android
+
+    environment:
+      APPVEYOR_BUILD_WORKER_IMAGE: ubuntu-gce-c
 
 stack:
 - python 3.12
