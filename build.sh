@@ -160,7 +160,7 @@ echo ">>> Configuring Python build environment for $abi"
 
 # configure build environment
 prefix=python_build_dir
-. android-env.sh
+. $project_dir/android-env.sh
 
 cd $python_build_dir
 
