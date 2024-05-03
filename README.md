@@ -23,6 +23,9 @@ To build all ABIs:
 
 ## Credits
 
+Build process depends on:
+* https://github.com/beeware/cpython-android-source-deps
+
 Based on the work from:
 * https://github.com/chaquo/chaquopy/tree/master/target
 * https://github.com/beeware/Python-Android-support
