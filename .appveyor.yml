@@ -50,7 +50,7 @@ for:
       only:
         - job_group: macos
     environment:
-      APPVEYOR_BUILD_WORKER_IMAGE: sonoma
+      APPVEYOR_BUILD_WORKER_IMAGE: macos-sonoma
 
 stack:
 - python 3.12
