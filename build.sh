@@ -234,5 +234,4 @@ find $python_install -type f -iname "*.so" -exec $STRIP --strip-unneeded {} \;
 echo ">>> Replacing host platform"
 sed -i -e "s/_PYTHON_HOST_PLATFORM=.*/_PYTHON_HOST_PLATFORM=android-$api_level-$abi/" $python_install/lib/python$python_version_short/config-$python_version_short/Makefile
 
-# zip
-#tar -czf python-$python_version-android-$NDK_VERSION-$abi.tar.gz -X python/standalone.exclude -C prefix/$abi .
+# the end!
