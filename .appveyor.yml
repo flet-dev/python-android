@@ -1,31 +1,56 @@
+skip_branch_with_pr: true
+
 environment:
   PYTHON_VERSION: 3.12
   NDK_VERSION: r26d
 
   matrix:
-    - job_name: Python for Android - arm64-v8a
+    # Android
+    - job_name: Build Python on Linux - arm64-v8a
       job_group: android
       ANDROID_ABI: arm64-v8a
 
-    - job_name: Python for Android - armeabi-v7a
+    - job_name: Build Python on Linux - armeabi-v7a
       job_group: android
       ANDROID_ABI: armeabi-v7a
 
-    - job_name: Python for Android - x86_64
+    - job_name: Build Python on Linux - x86_64
       job_group: android
       ANDROID_ABI: x86_64
 
-    - job_name: Python for Android - x86
+    - job_name: Build Python on Linux - x86
       job_group: android
+      ANDROID_ABI: x86
+
+    # macOS
+    - job_name: Build Python on macOS - arm64-v8a
+      job_group: macos
+      ANDROID_ABI: arm64-v8a
+
+    - job_name: Build Python on macOS - armeabi-v7a
+      job_group: macos
+      ANDROID_ABI: armeabi-v7a
+
+    - job_name: Build Python on macOS - x86_64
+      job_group: macos
+      ANDROID_ABI: x86_64
+
+    - job_name: Build Python on macOS - x86
+      job_group: macos
       ANDROID_ABI: x86
 
 for:
   - matrix:
       only:
         - job_group: android
-
     environment:
       APPVEYOR_BUILD_WORKER_IMAGE: ubuntu-gce-c
+
+  - matrix:
+      only:
+        - job_group: macos
+    environment:
+      APPVEYOR_BUILD_WORKER_IMAGE: sonoma
 
 stack:
 - python 3.12
