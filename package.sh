@@ -9,8 +9,10 @@ read python_version_major python_version_minor < <(echo $python_version | sed -E
 python_version_short=$python_version_major.$python_version_minor
 
 # copy files to dist
-mkdir -p dist/python-$python_version_short/$abi
-dist_dir=$(realpath dist/python-$python_version_short/$abi)
+dist=dist/python-$python_version_short/$abi
+rm -rf $dist
+mkdir -p $dist
+dist_dir=$(realpath $dist)
 rsync -av --exclude-from=distro.exclude install/android/$abi/python-$python_version_short/* $dist_dir
 
 # create libpythonbundle.so
@@ -20,20 +22,26 @@ mkdir -p $bundle_dir
 # modules with *.so files
 mv $dist_dir/lib/python$python_version_short/lib-dynload $bundle_dir/modules
 
-# site-packages
-mkdir -p $bundle_dir/site-packages
-echo "pip packages are installed here" > $bundle_dir/site-packages/readme.txt
-
-# stdlib.zip
-stdlib_zip=$bundle_dir/stdlib.zip
+# stdlib
+# stdlib_zip=$bundle_dir/stdlib.zip
 cd $dist_dir/lib/python$python_version_short
 python -m compileall -b .
 find . \( -name '*.so' -or -name '*.py' -or -name '*.typed' \) -type f -delete
-zip -r $stdlib_zip .
+rm -rf __pycache__
+rm -rf **/__pycache__
+# zip -r $stdlib_zip .
 cd -
+mv $dist_dir/lib/python$python_version_short $bundle_dir/stdlib
+
+# compress libpythonbundle
+cd $bundle_dir
+zip -r ../libpythonbundle.so .
+cd -
+rm -rf $bundle_dir
 
 # copy *.so from lib
 cp $dist_dir/lib/*.so $dist_dir
 rm -rf $dist_dir/lib
 
-#tar -czf python-$python_version-android-$NDK_VERSION-$abi.tar.gz -X python/standalone.exclude -C prefix/$abi .
+# final archive
+tar -czf dist/python-$python_version_short-android-$abi.tar.gz -C $dist_dir .
