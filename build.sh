@@ -140,8 +140,8 @@ touch $sqlite_lib
 # ===============
 
 build_dir=$project_dir/build/$os/$abi
-python_build_dir=$project_dir/build/$os/$abi/python-$python_version_short
-python_install=$project_dir/install/$os/$abi/python-$python_version_short
+python_build_dir=$project_dir/build/$os/$abi/python-$python_version
+python_install=$project_dir/install/$os/$abi/python-$python_version
 python_lib=$sqlite_install/lib/libpython$python_version_short.a
 python_filename=Python-$python_version.tgz
 
