@@ -159,7 +159,7 @@ touch $python_build_dir/configure
 echo ">>> Configuring Python build environment for $abi"
 
 # configure build environment
-prefix=python_build_dir
+prefix=$python_build_dir
 . $project_dir/android-env.sh
 
 cd $python_build_dir
