@@ -4,7 +4,7 @@ set -eu
 python_version=${1:?}
 abi=${2:?}
 NDK_VERSION=r26d
-api_level=21
+api_level=24
 
 bzip2_version=1.0.8-1
 xz_version=5.4.6-0
