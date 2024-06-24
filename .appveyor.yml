@@ -6,6 +6,9 @@ environment:
   GITHUB_TOKEN:
     secure: 9SKIwc3VSfYJ5IChvNR74rlTF9BMbAfhCGu1/TmYJBMtC6lkY+UDDkZNK7rC9xnQFUxMrNgoo9kNcNAbKbU8XAcrSwkP2H4mX04FI7P+YbxfiWC8nVHhGNxR4LzO+GO0
 
+stack:
+- python 3.12
+
 build_script:
 - ./build-all.sh $PYTHON_VERSION
 - tar -czf python-android-install-$PYTHON_VERSION.tar.gz install support -C .
