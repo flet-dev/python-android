@@ -21,5 +21,5 @@ test: off
 deploy:
   provider: GitHub
   auth_token: $(GITHUB_TOKEN)
-  release: $(PYTHON_VERSION)
+  release: v$(PYTHON_VERSION)
   artifact: python-android-install
