@@ -13,7 +13,7 @@ stack:
 
 build_script:
 - ./build-all.sh $PYTHON_VERSION
-- tar -czf python-android-install-$PYTHON_VERSION.tar.gz install support -C .
+- tar -czf python-android-install-$PYTHON_VERSION.tar.gz install support
 - find . -maxdepth 1 -type f -iname python-android-install-*.tar.gz -exec appveyor PushArtifact -DeploymentName python-android-install {} \;
 
 test: off
