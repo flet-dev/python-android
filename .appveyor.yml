@@ -1,5 +1,7 @@
 image: ubuntu-gce-c
 
+skip_tags: true
+
 environment:
   PYTHON_VERSION: 3.12.4
   NDK_VERSION: r26d
