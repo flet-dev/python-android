@@ -27,7 +27,7 @@ if [[ -z "${NDK_HOME-}" ]]; then
             fi
 
             cd $downloads
-            $seven_zip x $ndk_dmg
+            $seven_zip x -snld $ndk_dmg
             mkdir -p $(dirname $NDK_HOME)
             mv Android\ NDK\ */AndroidNDK*.app/Contents/NDK $NDK_HOME
             rm -rf Android\ NDK\ *

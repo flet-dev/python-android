@@ -3,7 +3,7 @@ set -eu
 
 python_version=${1:?}
 abi=${2:?}
-NDK_VERSION=r26d
+NDK_VERSION=r27-beta2
 api_level=24
 
 bzip2_version=1.0.8-1
