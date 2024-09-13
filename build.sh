@@ -9,8 +9,8 @@ api_level=24
 bzip2_version=1.0.8-1
 xz_version=5.4.6-0
 libffi_version=3.4.4-2
-openssl_version=3.0.13-1
-sqlite_version=3.45.1-0
+openssl_version=3.0.15-0
+sqlite_version=3.45.2-0
 
 os=android
 build=custom

@@ -4,16 +4,20 @@ skip_tags: true
 
 environment:
   PYTHON_VERSION: 3.12.4
-  NDK_VERSION: r27-beta2
+  NDK_VERSION: r27
   GITHUB_TOKEN:
     secure: 9SKIwc3VSfYJ5IChvNR74rlTF9BMbAfhCGu1/TmYJBMtC6lkY+UDDkZNK7rC9xnQFUxMrNgoo9kNcNAbKbU8XAcrSwkP2H4mX04FI7P+YbxfiWC8nVHhGNxR4LzO+GO0
 
 stack:
 - python 3.12
 
+install:
+- read ver_maj ver_min < <(echo $PYTHON_VERSION | sed -E 's/^([0-9]+)\.([0-9]+).*/\1 \2/')
+- export PYTHON_VERSION_SHORT="$ver_maj.$ver_min"
+
 build_script:
 - ./build-all.sh $PYTHON_VERSION
-- tar -czf python-android-install-$PYTHON_VERSION.tar.gz install support
+- tar -czf python-android-install-$PYTHON_VERSION_SHORT.tar.gz install support
 - find . -maxdepth 1 -type f -iname python-android-install-*.tar.gz -exec appveyor PushArtifact -DeploymentName python-android-install {} \;
 
 test: off
@@ -21,5 +25,5 @@ test: off
 deploy:
   provider: GitHub
   auth_token: $(GITHUB_TOKEN)
-  release: v$(PYTHON_VERSION)
+  release: v$(PYTHON_VERSION_SHORT)
   artifact: python-android-install
